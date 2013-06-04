@@ -8,7 +8,7 @@ Gem::Specification.new do |gem|
   gem.version       = Commons::Compress::VERSION
   gem.authors       = ['Pat Bair', 'Luke Mommaerts']
   gem.email         = ['bi+commons-compress@modcloth.com']
-  gem.description   = %q{Apache Commons Compress wrapper for JRuby.}
+  gem.description   = %q{Apache Commons Compress wrapper for JRuby}
   gem.summary       = %q{Wraps Apache Commons Compress library for easy JRuby usage}
   gem.homepage      = ""
 
