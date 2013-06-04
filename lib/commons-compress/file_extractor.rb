@@ -58,11 +58,10 @@ module Commons
             buff_out = BufferedOutputStream.new(file_out)
 
             yield entry, buff_out
+            close_all(buff_out, file_out)
           end
         rescue Exception => e
           raise FileExtractionError, "Error writing extracted file #{e.message}"
-        ensure
-          close_all(buff_out, file_out)
         end
       end
 

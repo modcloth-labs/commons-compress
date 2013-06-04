@@ -20,6 +20,11 @@ describe Commons::Compress::FileExtractor do
     (File.exists?(first) && File.exist?(second)).should be_true
   end
 
+  it "should extract a gzipped tarball into the correct input files" do
+    File.open(first, 'r') { |f| f.readline.should == "first\n" }
+    File.open(second, 'r') { |f| f.readline.should == "second\n" }
+  end
+
   it "should preserve the source file during extraction" do
     File.exists?(test_file).should be_true
   end
