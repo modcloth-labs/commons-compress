@@ -8,6 +8,7 @@ java_import java.io.BufferedOutputStream
 java_import org.apache.commons.compress.archivers.tar.TarArchiveEntry
 java_import org.apache.commons.compress.archivers.tar.TarArchiveInputStream
 java_import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream
+java_import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream
 
 module Commons
   module Compress
@@ -20,13 +21,13 @@ module Commons
         @local_file = local_file
       end
 
-      def extract
+      def extract_and_compress
         with_tar_gz_stream do |tar_in|
-          with_entry(tar_in) do |entry, f_out|
+          with_entry(tar_in) do |entry, gz_out|
             count, data = 0, Java::byte[BUFF_SIZE].new
 
             while (count = tar_in.read(data, 0, BUFF_SIZE)) != -1
-              f_out.write(data, 0, count)
+              gz_out.write(data, 0, count)
             end
           end
         end
@@ -56,17 +57,20 @@ module Commons
           while entry = tar_in.get_next_entry
             file_out = FileOutputStream.new(output_entry_path(entry.get_name))
             buff_out = BufferedOutputStream.new(file_out)
+            gzip_out = GzipCompressorOutputStream.new(buff_out)
 
-            yield entry, buff_out
-            close_all(buff_out, file_out)
+            yield entry, gzip_out
+            close_all(gzip_out, buff_out, file_out)
           end
         rescue Exception => e
           raise FileExtractionError, "Error writing extracted file #{e.message}"
+        ensure
+          close_all(gzip_out, buff_out, file_out)
         end
-      end
+     end
 
       def output_entry_path(entry_name)
-        File.join(File.dirname(local_file), entry_name)
+        File.join(File.dirname(local_file), File.basename(entry_name, '.*')) + '.gz'
       end
 
       def close_all(*args)
