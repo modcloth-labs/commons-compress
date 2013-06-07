@@ -12,10 +12,8 @@ describe Commons::Compress::Gzip::File do
 
   describe "writing a gzipped file" do
     it "should compress the contents of the file" do
-      data = "hello".to_java.get_bytes
-
       described_class.open(test_file, 'w') do |gz|
-        gz.write(data, 0, data.length)
+        gz.write("hello")
       end
 
       File.exists?(test_file).should be_true

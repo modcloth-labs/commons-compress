@@ -52,8 +52,10 @@ module Commons
             @wrapped_stream = wrapped_stream_klass(modes).new(@underlying_stream.wrapped_stream)
           end
 
-          def write(data, offset, length)
-            wrapped_stream.write(data, offset, length)
+          def write(data, offset = 0)
+            java_data = data.to_java_bytes
+
+            wrapped_stream.write(java_data, offset, java_data.length)
           end
 
           def close
