@@ -1,3 +1,4 @@
+require 'commons-compress'
 require 'commons-compress/tar/archive'
 
 describe Commons::Compress::Tar::Archive do

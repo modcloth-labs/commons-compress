@@ -1,4 +1,6 @@
+require 'commons-compress'
 require 'commons-compress/gzip/file'
+require 'zlib'
 
 describe Commons::Compress::Gzip::File do
   let(:spec_dir) { File.join(File.expand_path(File.dirname(__FILE__)), '..', '..') }
