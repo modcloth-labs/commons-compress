@@ -1,6 +1,8 @@
 # commons-compress
 
-TODO: Write a gem description
+A simple jruby wrapper around Apache commons-compress library. Attempts
+to give an easy ruby-like API for programmers with ruby's file
+libraries.
 
 ## Installation
 
@@ -14,7 +16,15 @@ Or install it yourself as:
 
     $ gem install commons-compress'
 
-TODO: Write usage instructions here
+## Usage
+
+```ruby
+Commons::Compress::Tar::Archive.open('foo.tgz', 'r:g') do |tar|
+  tar.each_entry do |e|
+    puts e.name
+  end
+end
+```
 
 ## Contributing
 
