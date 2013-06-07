@@ -59,6 +59,10 @@ module Commons
             wrapped_stream.get_next_entry
           end
 
+          def read(buffer, offset, length)
+            wrapped_stream.read(buffer, offset, length)
+          end
+
           def close
             wrapped_stream.close rescue nil
             underlying_stream.close rescue nil
@@ -80,6 +84,14 @@ module Commons
 
                 entries << entry.get_name
               end
+            end
+          end
+
+          def each_block(size = 4096)
+            count, data = 0, Java::byte[size].new
+
+            while (count = tar_stream.read(data, 0, size)) != -1
+              yield String.from_java_bytes(data)[0...count]
             end
           end
 

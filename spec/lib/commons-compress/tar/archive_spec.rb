@@ -29,6 +29,19 @@ describe Commons::Compress::Tar::Archive do
 
       entries.should == ['first.txt', 'second.txt']
     end
+
+    it "should provide access to read from the archive" do
+      file_data = []
+      described_class.open(test_file, 'r') do |tar|
+        tar.each_entry do |entry|
+          tar.each_block do |data|
+            file_data << data
+          end
+        end
+      end
+
+      file_data.should == ["first\n", "second\n"]
+    end
   end
 
   describe "extracting a compressed tarball" do
@@ -53,6 +66,19 @@ describe Commons::Compress::Tar::Archive do
       end
 
       entries.should == ['first.txt', 'second.txt']
+    end
+
+    it "should provide access to read from the archive" do
+      file_data = []
+      described_class.open(test_file, 'r:g') do |tar|
+        tar.each_entry do |entry|
+          tar.each_block do |data|
+            file_data << data
+          end
+        end
+      end
+
+      file_data.should == ["first\n", "second\n"]
     end
   end
 end

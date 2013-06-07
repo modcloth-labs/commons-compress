@@ -20,8 +20,11 @@ Or install it yourself as:
 
 ```ruby
 Commons::Compress::Tar::Archive.open('foo.tgz', 'r:g') do |tar|
-  tar.each_entry do |e|
-    puts e.name
+  tar.each_entry do |entry|
+    tar.each_block do |data|
+      puts entry.name
+      puts data
+    end
   end
 end
 ```
