@@ -2,7 +2,7 @@ require 'commons-compress'
 require 'commons-compress/tar/archive'
 
 describe Commons::Compress::Tar::Archive do
-  let(:spec_dir) { File.join(File.expand_path(File.dirname(__FILE__)), '..', '..') }
+  let(:spec_dir) { File.join(File.expand_path(File.dirname(__FILE__)), '..', '..', '..') }
   let(:first) { File.join(spec_dir, 'first.txt') }
   let(:second) { File.join(spec_dir, 'second.txt') }
 

@@ -3,7 +3,7 @@ require 'commons-compress/gzip/file'
 require 'zlib'
 
 describe Commons::Compress::Gzip::File do
-  let(:spec_dir) { File.join(File.expand_path(File.dirname(__FILE__)), '..', '..') }
+  let(:spec_dir) { File.join(File.expand_path(File.dirname(__FILE__)), '..', '..', '..') }
   let(:test_file) { File.join(spec_dir, 'test.gz') }
 
   after(:each) {
