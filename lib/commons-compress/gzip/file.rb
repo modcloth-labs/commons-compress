@@ -1,4 +1,4 @@
-require 'lib/commons-compress/buffered/file'
+require File.join(File.expand_path(File.dirname(__FILE__)), '..', 'buffered', 'file')
 
 java_import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream
 java_import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream
