@@ -1,5 +1,5 @@
-require 'commons-compress'
-require 'commons-compress/gzip/file'
+require_relative '../../../../lib/commons-compress'
+require_relative '../../../../lib/commons-compress/gzip/file'
 require 'zlib'
 
 describe Commons::Compress::Gzip::File do

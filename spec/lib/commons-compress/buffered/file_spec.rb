@@ -1,7 +1,7 @@
-require 'commons-compress'
-require 'commons-compress/gzip/file'
+require_relative '../../../../lib/commons-compress'
+require_relative '../../../../lib/commons-compress/buffered/file'
 
-describe Commons::Compress::Gzip::File do
+describe Commons::Compress::Buffered::File do
   describe "writing a buffered file" do
     context "an error occurs during file io" do
       let(:file) { double('file', close: nil) }

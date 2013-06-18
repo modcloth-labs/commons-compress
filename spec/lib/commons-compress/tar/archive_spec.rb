@@ -1,5 +1,5 @@
-require 'commons-compress'
-require 'commons-compress/tar/archive'
+require_relative '../../../../lib/commons-compress'
+require_relative '../../../../lib/commons-compress/tar/archive'
 
 describe Commons::Compress::Tar::Archive do
   let(:spec_dir) { File.join(File.expand_path(File.dirname(__FILE__)), '..', '..', '..') }

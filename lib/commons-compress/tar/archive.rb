@@ -1,5 +1,5 @@
-require File.join(File.expand_path(File.dirname(__FILE__)), '..', 'gzip', 'file')
-require File.join(File.expand_path(File.dirname(__FILE__)), '..', 'buffered', 'file')
+require_relative '../buffered/file'
+require_relative '../gzip/file'
 require_relative 'archive_entry'
 
 java_import org.apache.commons.compress.archivers.tar.TarArchiveInputStream
