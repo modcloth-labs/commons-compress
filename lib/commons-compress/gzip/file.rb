@@ -36,8 +36,7 @@ module Commons
 
               yield gzip_stream
             rescue Exception => e
-              $stderr.puts "#{self.name} Error: #{e.message}"
-              nil
+              raise e
             ensure
               gzip_stream.close unless gzip_stream.nil?
             end

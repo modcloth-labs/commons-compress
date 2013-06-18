@@ -38,8 +38,7 @@ module Commons
 
               yield buffered_stream
             rescue Exception => e
-              $stderr.puts "#{self.name} Error: #{e.message}"
-              nil
+              raise e
             ensure
               buffered_stream.close unless buffered_stream.nil?
             end

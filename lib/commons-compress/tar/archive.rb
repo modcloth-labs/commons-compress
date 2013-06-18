@@ -33,8 +33,7 @@ module Commons
 
               yield OpenedArchive.new(tar_stream)
             rescue Exception => e
-              $stderr.puts "#{self.name} Error: #{e.message}"
-              nil
+              raise e
             ensure
               tar_stream.close unless tar_stream.nil?
             end

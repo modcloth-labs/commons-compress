@@ -81,4 +81,33 @@ describe Commons::Compress::Tar::Archive do
       file_data.should == ["first\n", "second\n"]
     end
   end
+
+  describe "reading from a tarball" do
+    context "an error occurs during file io" do
+      let(:tar) { double('tar', close: nil) }
+
+      before(:each) do
+        described_class.stub(:unsafe_open).and_return(tar)
+      end
+
+      it "should close the file" do
+        tar.should_receive(:close)
+
+        begin
+          described_class.open('foo.tar', 'r') do |t|
+            raise IOError
+          end
+        rescue
+        end
+      end
+
+      it "should re-raise the error" do
+        expect do
+          described_class.open('foo.tar', 'r') do |t|
+            raise IOError
+          end
+        end.to raise_error
+      end
+    end
+  end
 end
