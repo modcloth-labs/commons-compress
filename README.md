@@ -1,7 +1,7 @@
 # commons-compress
 
-A simple JRuby wrapper around the Apache commons-compress library. Attempts
-to give a ruby-like API for programmers familiar with ruby's file
+A simple JRuby wrapper around the Apache [commons-compress](http://commons.apache.org/proper/commons-compress/) library.
+Attempts to give a ruby-like API for programmers familiar with ruby's file
 libraries.
 
 ## Installation
