@@ -19,8 +19,9 @@ then execute:
 ```ruby
 Commons::Compress::Tar::Archive.open('foo.tgz', 'r:g') do |tar|
   tar.each_entry do |entry|
+    puts entry.name
+
     tar.each_block do |data|
-      puts entry.name
       puts data
     end
   end
