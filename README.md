@@ -1,20 +1,18 @@
 # commons-compress
 
-A simple jruby wrapper around Apache commons-compress library. Attempts
-to give an easy ruby-like API for programmers with ruby's file
+A simple JRuby wrapper around the Apache commons-compress library. Attempts
+to give a ruby-like API for programmers familiar with ruby's file
 libraries.
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
-    gem 'commons-compress' then execute:
+    gem 'commons-compress', github: 'modcloth-labs/commons-compress'
+
+then execute:
 
     $ bundle
-
-Or install it yourself as:
-
-    $ gem install commons-compress'
 
 ## Usage
 
