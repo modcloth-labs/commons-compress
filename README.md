@@ -1,5 +1,7 @@
 # commons-compress
 
+[![Build Status](https://travis-ci.org/modcloth-labs/commons-compress.png?branch=master)](https://travis-ci.org/modcloth-labs/commons-compress)
+
 A simple JRuby wrapper around the Apache [commons-compress](http://commons.apache.org/proper/commons-compress/) library.
 Attempts to give a ruby-like API for programmers familiar with ruby's file
 libraries.
