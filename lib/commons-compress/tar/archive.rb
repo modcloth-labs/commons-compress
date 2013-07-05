@@ -60,12 +60,7 @@ module Commons
           [open_mode, gzipped]
         end
 
-        class TarStream
-          def initialize(underlying_stream, open_mode)
-            @underlying_stream = underlying_stream
-            @wrapped_stream = open(open_mode)
-          end
-
+        class TarStream < BaseStream
           def next_entry
             wrapped_stream.get_next_entry
           end
@@ -73,15 +68,6 @@ module Commons
           def read(buffer, offset, length)
             wrapped_stream.read(buffer, offset, length)
           end
-
-          def close
-            wrapped_stream.close rescue nil
-            underlying_stream.close rescue nil
-          end
-
-          private
-
-          attr_reader :wrapped_stream, :underlying_stream
 
           def open(open_mode)
             case open_mode

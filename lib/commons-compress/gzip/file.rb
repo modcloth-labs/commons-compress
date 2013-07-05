@@ -12,34 +12,11 @@ module Commons
           GzipStream.new(Buffered::File.open(filename, open_mode), open_mode)
         end
 
-        class GzipStream
-          attr_reader :wrapped_stream
-
-          def initialize(underlying_stream, open_mode)
-            @underlying_stream = underlying_stream
-            @wrapped_stream = open(open_mode)
-          end
-
+        class GzipStream < BaseStream
           def write(data, offset = 0)
             java_data = data.to_java_bytes
 
             wrapped_stream.write(java_data, offset, java_data.length)
-          end
-
-          def close
-            wrapped_stream.close rescue nil
-            underlying_stream.close rescue nil
-          end
-
-          private
-
-          attr_reader :underlying_stream
-
-          def open(open_mode)
-            case open_mode
-            when RDONLY then open_read
-            when WRONLY then open_write
-            end
           end
 
           def open_read
