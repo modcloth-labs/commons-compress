@@ -7,9 +7,6 @@ module Commons
     module Tar
       class Archive
 
-        RDONLY = 0x1.freeze
-        WRONLY = 0x2.freeze
-
         def self.open(filename, mode, &block)
           open_mode, gzipped = parse(mode)
 

@@ -2,11 +2,11 @@ module Commons
   module Compress
     InvalidModeError = Class.new(StandardError)
 
+    RDONLY = 0x1.freeze
+    WRONLY = 0x2.freeze
+
     module Buffered
       class File
-
-        RDONLY = 0x1.freeze
-        WRONLY = 0x2.freeze
 
         def self.open(filename, modestr, &block)
           open_mode = parse(modestr)
