@@ -29,7 +29,7 @@ module Commons
           when RDONLY, WRONLY then modestr
           when 'r' then RDONLY
           when 'w' then WRONLY
-          else raise InvalidModeError, "#{modestr} is not a valid mode"
+          else raise InvalidModeError, "illegal access mode #{modestr}"
           end
         end
 
