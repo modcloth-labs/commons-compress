@@ -2,56 +2,73 @@ require_relative '../buffered/file'
 require_relative '../gzip/file'
 require_relative 'archive_entry'
 
-java_import org.apache.commons.compress.archivers.tar.TarArchiveInputStream
-
 module Commons
   module Compress
     module Tar
       class Archive
 
-        class << self
-          def open(filename, mode, &block)
-            opts = parse(mode)
+        RDONLY = 0x1.freeze
+        WRONLY = 0x2.freeze
 
-            if block.nil?
-              unsafe_open(filename, opts[:gzip])
-            else
-              auto(filename, opts[:gzip], &block)
-            end
-          end
-          alias_method :new, :open
+        def self.open(filename, mode, &block)
+          open_mode, gzipped = parse(mode)
 
-          private
-
-          def unsafe_open(filename, gzipped)
-            TarStream.new(select_input(gzipped).new(filename, 'r'))
-          end
-
-          def auto(filename, gzipped)
-            begin
-              tar_stream = unsafe_open(filename, gzipped)
-
-              yield OpenedArchive.new(tar_stream)
-            rescue Exception => e
-              raise e
-            ensure
-              tar_stream.close unless tar_stream.nil?
-            end
-          end
-
-          def select_input(gzipped)
-            gzipped ? Gzip::File : Buffered::File
-          end
-
-          def parse(mode)
-            { gzip: mode =~ /[rw]:g/ }
+          if block.nil?
+            unsafe_open(filename, open_mode, gzipped)
+          else
+            auto(filename, open_mode, gzipped, &block)
           end
         end
 
+        class << self
+          alias_method :new, :open
+        end
+
+        private
+
+        def self.unsafe_open(filename, open_mode, gzipped)
+          if gzipped
+            open_gzipped(filename, open_mode)
+          else
+            open_buffered(filename, open_mode)
+          end
+        end
+
+        def self.auto(filename, open_mode, gzipped)
+          begin
+            tar_stream = unsafe_open(filename, open_mode, gzipped)
+
+            yield OpenedArchive.new(tar_stream)
+          rescue Exception => e
+            raise e
+          ensure
+            tar_stream.close unless tar_stream.nil?
+          end
+        end
+
+        def self.open_gzipped(filename, open_mode)
+          TarStream.new(Gzip::File.new(filename, open_mode), open_mode)
+        end
+
+        def self.open_buffered(filename, open_mode)
+          TarStream.new(Buffered::File.new(filename, open_mode), open_mode)
+        end
+
+        def self.parse(modestr)
+          open_modestr, gzipped = modestr.split(':')
+
+          open_mode = case open_modestr
+          when 'r' then RDONLY
+          else raise InvalidModeError, "illegal access mode #{modestr}"
+          end
+
+          [open_mode, gzipped]
+        end
+
         class TarStream
-          def initialize(underlying_stream)
+          def initialize(underlying_stream, open_mode)
             @underlying_stream = underlying_stream
-            @wrapped_stream = TarArchiveInputStream.new(@underlying_stream.wrapped_stream)
+            @wrapped_stream = open(open_mode)
           end
 
           def next_entry
@@ -69,6 +86,17 @@ module Commons
 
           private
           attr_reader :wrapped_stream, :underlying_stream
+
+          def open(open_mode)
+            case open_mode
+            when RDONLY then open_read
+            end
+          end
+
+          def open_read
+            org.apache.commons.compress.archivers.tar.
+              TarArchiveInputStream.new(underlying_stream.wrapped_stream)
+          end
         end
 
         class OpenedArchive
