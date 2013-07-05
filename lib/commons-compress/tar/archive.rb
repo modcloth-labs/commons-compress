@@ -1,11 +1,13 @@
+require_relative '../base_file'
 require_relative '../buffered/file'
 require_relative '../gzip/file'
+
 require_relative 'archive_entry'
 
 module Commons
   module Compress
     module Tar
-      class Archive
+      class Archive < BaseFile
 
         def self.open(filename, mode, &block)
           open_mode, gzipped = parse(mode)
@@ -15,10 +17,6 @@ module Commons
           else
             auto(filename, open_mode, gzipped, &block)
           end
-        end
-
-        class << self
-          alias_method :new, :open
         end
 
         private

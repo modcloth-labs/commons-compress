@@ -1,49 +1,16 @@
+require_relative '../base_file'
+
 module Commons
   module Compress
     module Buffered
-      class File
-
-        def self.open(filename, modestr, &block)
-          open_mode = parse(modestr)
-
-          if block.nil?
-            unsafe_open(filename, open_mode)
-          else
-            auto(filename, open_mode, &block)
-          end
-        end
-
-        class << self
-          alias_method :new, :open
-        end
+      class File < BaseFile
 
         private
-
-        def self.parse(modestr)
-          case modestr
-          when RDONLY, WRONLY then modestr
-          when 'r' then RDONLY
-          when 'w' then WRONLY
-          else raise InvalidModeError, "illegal access mode #{modestr}"
-          end
-        end
 
         def self.unsafe_open(filename, open_mode)
           case open_mode
           when RDONLY then unsafe_open_read(filename)
           when WRONLY then unsafe_open_write(filename)
-          end
-        end
-
-        def self.auto(filename, modes)
-          begin
-            buffered_stream = unsafe_open(filename, modes)
-
-            yield buffered_stream
-          rescue Exception => e
-            raise e
-          ensure
-            buffered_stream.close unless buffered_stream.nil?
           end
         end
 
