@@ -1,54 +1,60 @@
 require_relative '../buffered/file'
 
-java_import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream
-java_import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream
-
 module Commons
   module Compress
     module Gzip
       class File
 
+        RDONLY = 0x1.freeze
+        WRONLY = 0x2.freeze
+
+        def self.open(filename, modestr, &block)
+          open_mode = parse(modestr)
+
+          if block.nil?
+            unsafe_open(filename, open_mode)
+          else
+            auto(filename, open_mode, &block)
+          end
+        end
+
         class << self
-          def open(filename, modestr, &block)
-            if block.nil?
-              unsafe_open(filename, modestr)
-            else
-              auto(filename, modestr, &block)
-            end
-          end
           alias_method :new, :open
+        end
 
-          private
+        private
 
-          def parse(modestr)
-            { read: modestr == 'r', write: modestr == 'w' }
+        def self.parse(modestr)
+          case modestr
+          when RDONLY, WRONLY then modestr
+          when 'r' then RDONLY
+          when 'w' then WRONLY
+          else raise InvalidModeError, "illegal access mode #{modestr}"
           end
+        end
 
-          def unsafe_open(filename, modestr)
-            modes = parse(modestr)
+        def self.unsafe_open(filename, open_mode)
+          GzipStream.new(Buffered::File.open(filename, open_mode), open_mode)
+        end
 
-            GzipStream.new(Buffered::File.open(filename, modestr), modes)
-          end
+        def self.auto(filename, open_mode)
+          begin
+            gzip_stream = unsafe_open(filename, open_mode)
 
-          def auto(filename, modestr)
-            begin
-              gzip_stream = unsafe_open(filename, modestr)
-
-              yield gzip_stream
-            rescue Exception => e
-              raise e
-            ensure
-              gzip_stream.close unless gzip_stream.nil?
-            end
+            yield gzip_stream
+          rescue Exception => e
+            raise e
+          ensure
+            gzip_stream.close unless gzip_stream.nil?
           end
         end
 
         class GzipStream
           attr_reader :wrapped_stream
 
-          def initialize(underlying_stream, modes)
+          def initialize(underlying_stream, open_mode)
             @underlying_stream = underlying_stream
-            @wrapped_stream = wrapped_stream_klass(modes).new(@underlying_stream.wrapped_stream)
+            @wrapped_stream = open(open_mode)
           end
 
           def write(data, offset = 0)
@@ -66,8 +72,21 @@ module Commons
 
           attr_reader :underlying_stream
 
-          def wrapped_stream_klass(modes)
-            modes[:read] ? GzipCompressorInputStream : GzipCompressorOutputStream
+          def open(open_mode)
+            case open_mode
+            when RDONLY then open_read
+            when WRONLY then open_write
+            end
+          end
+
+          def open_read
+            org.apache.commons.compress.compressors.gzip.
+              GzipCompressorInputStream.new(underlying_stream.wrapped_stream)
+          end
+
+          def open_write
+            org.apache.commons.compress.compressors.gzip.
+              GzipCompressorOutputStream.new(underlying_stream.wrapped_stream)
           end
         end
       end
