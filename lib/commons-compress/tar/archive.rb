@@ -85,6 +85,7 @@ module Commons
           end
 
           private
+
           attr_reader :wrapped_stream, :underlying_stream
 
           def open(open_mode)
@@ -123,6 +124,7 @@ module Commons
           end
 
           private
+
           attr_reader :tar_stream
         end
       end
