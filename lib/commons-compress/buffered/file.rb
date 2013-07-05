@@ -1,5 +1,7 @@
 module Commons
   module Compress
+    InvalidModeError = Class.new(StandardError)
+
     module Buffered
       class File
 
@@ -24,8 +26,10 @@ module Commons
 
         def self.parse(modestr)
           case modestr
+          when RDONLY, WRONLY then modestr
           when 'r' then RDONLY
           when 'w' then WRONLY
+          else raise InvalidModeError, "#{modestr} is not a valid mode"
           end
         end
 
